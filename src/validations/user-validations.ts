@@ -1,4 +1,4 @@
-import z from "zod";
+import z, { string } from "zod";
 
 export const vCreateUser = z.object({
   first_name: z.string().min(3),
@@ -8,6 +8,7 @@ export const vCreateUser = z.object({
   dob: z.string().transform(val => new Date(val)),
   doj: z.string().transform(val => new Date(val)),
   designation: z.string().min(3),
+
 });
 
 export type ValidatedCreateUser = z.infer<typeof vCreateUser>;

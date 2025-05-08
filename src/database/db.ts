@@ -13,7 +13,7 @@ const pool = new Pool({
   password: env.DB_PASSWORD,
   database: env.DB_NAME,
     ssl: {
-        rejectUnauthorized: false,
+        rejectUnauthorized: true,
         ca: fs.readFileSync("./ca.pem").toString(),
     },
 });

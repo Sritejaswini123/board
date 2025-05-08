@@ -2,11 +2,11 @@ import { eq } from "drizzle-orm";
 import db from "../database/db.js"
 import { users, type NewUser, type User, type UsersTable } from "../database/schemas/users.js";
 
-type DBTable = UsersTable 
+type DBTable = UsersTable
 type NewDBRecord  = NewUser
 type DBRecordRow = User
 
-export const createUser = async<DBRecordRow>(table : DBTable , record : NewDBRecord )=>{
+export const createRecord = async<DBRecordRow>(table : DBTable , record : NewDBRecord )=>{
     const result = await db.insert(table).values(record).returning() ;
     return result[0]  
 }
@@ -15,3 +15,6 @@ export const getRecordById = async <DBRecordRow>(table: DBTable,id: number) => {
     const result = await db.select().from(table).where(eq(users.id,id));
     return result[0];
 };
+
+
+

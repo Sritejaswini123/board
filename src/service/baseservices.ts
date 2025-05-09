@@ -18,15 +18,23 @@ export const getRecordById = async <DBRecordRow>(table: DBTable,id: number) => {
 };
 
 //get all users 
-export const getAllRecords = async <DBRecordRow>(table: DBTable,
-    limit: number,
-    offset: number
-) => {
-    const result = await db.select().from(table).limit(limit).offset(offset);
+export const getAllRecords = async <DBRecordRow>(table: DBTable) => {
+    const result = await db.select().from(table);
     const totalCount =  await db.select({ count: count() }) .from(table)
     .then(res => Number(res[0].count));
+
     return {result, totalCount}
 };
+//getPaginatedRecords
+export const getPaginatedRecords = async <DBRecordRow>(table: DBTable, limit: number,  offset: number,) => {
+    const result = await db.select().from(table)
+    .orderBy(users.id)
+    .limit(limit)
+    .offset(offset);
+    return result;
+
+}
+
 //delete 
 export const deleteRecordById = async <DBRecordRow>(table: DBTable, id: number) => {
     const result = await db.delete(table).where(eq(users.id, id)).returning();

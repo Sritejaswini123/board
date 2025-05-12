@@ -31,6 +31,7 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
     .where(eq(users.email,validUserReq.email))
     .limit(1);
 
+    console.log("user");
     //if user exist 
     if (existingUser.length > 0) {
       console.log("Yes, user exists");

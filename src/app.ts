@@ -14,15 +14,9 @@ app.get("/", (c) => {
   return sendResponse(c, 200, SERVICE_UP);
 });
 
-
-
-//user routes..........
+// user routes..........
 console.log("inside app");
-app.route('/', userRoutes);
-
-
-
-
+app.route("/", userRoutes);
 
 app.get("/error", (c) => {
   c.status(422);

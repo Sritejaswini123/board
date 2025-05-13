@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "name": "board",
+  "name": "codeBoard",
   "type": "collection",
   "ignore": [
     "node_modules",

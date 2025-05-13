@@ -6,7 +6,6 @@ export const projectActivities = pgTable("project_activities", {
   project_name: text().notNull(),
   month: text().notNull(),
   date: date({ mode: "date" }).notNull(),
-
   time: timestamp().notNull().defaultNow(),
   lines_of_code: text().notNull(),
 

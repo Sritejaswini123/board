@@ -1,16 +1,14 @@
 
-import { string, ZodError } from "zod";
-import { USER_CREATED, USER_DELETEED, USER_EXIST, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND, USER_UPDATED, USERS_FETCHED } from "../constants/app-messages.js";
-import { BAD_REQUEST, CONFLICT, CREATED, INTERNAL_SERVER_ERROR,UNPROCESSABLE_ENTITY, NOT_FOUND, OK } from "../constants/http-status-codes.js";
-import { users, type NewUser, type User } from "../database/schemas/users.js";
-import factory from "../factory.js";
-import { createUser, updateRecordById } from "../service/base-db-services.js";
-import { deleteUserById, getAllUsers, getUserById, isUserExist } from "../service/user-service.js";
-import { sendResponse } from "../utils/send-response.js";
-import { vCreateUser } from "../validations/user-validations.js";
-import db from "../database/db.js";
+import { ZodError } from "zod";
+import { USER_CREATED, USER_DELETEED, USER_EXIST, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND, USER_UPDATED, USERS_FETCHED } from "../constants/app-messages";
+import { BAD_REQUEST, CONFLICT, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/http-status-codes";
+import { users, type NewUser, type User } from "../database/schemas/users";
+import factory from "../factory";
+import { createUser, updateRecordById } from "../service/base-db-services";
+import { deleteUserById, getAllUsers, getUserById, isUserExist } from "../service/user-service";
+import { sendResponse } from "../utils/send-response";
+import { vCreateUser } from "../validations/user-validations";
 
-import { request } from "node:http";
 
 
 
@@ -74,7 +72,8 @@ export const getUserByIdHandlers = factory.createHandlers(async (c) => {
 export const getAllUsersHandlers = factory.createHandlers(async (c) => {
   try {
     const page=Number(c.req.query('page_no'));
-    const user = await getAllUsers(page);
+     const page_size=Number(c.req.query('page_size'));
+    const user = await getAllUsers(page,page_size);
     return sendResponse(c, OK, USERS_FETCHED, user);
   } catch (error) {
     return sendResponse(c, INTERNAL_SERVER_ERROR, USER_NOT_FOUND);

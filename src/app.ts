@@ -1,11 +1,11 @@
-import { SERVICE_UP } from "./constants/app-messages.js";
-import env from "./env.js";
-import factory from "./factory.js";
-import userRoutes from "./routes/userRoutes.js";
-import notFound from "./utils/not-found.js";
-import onError from "./utils/on-error.js";
-import { piLogger } from "./utils/pino-logger.js";
-import { sendResponse } from "./utils/send-response.js";
+import { SERVICE_UP } from "./constants/app-messages";
+import env from "./env";
+import factory from "./factory";
+import userRoutes from "./routes/userRoutes";
+import notFound from "./utils/not-found";
+import onError from "./utils/on-error";
+import { piLogger } from "./utils/pino-logger";
+import { sendResponse } from "./utils/send-response";
 
 const app = factory.createApp().basePath(env.API_VERSION);
 app.use(piLogger());

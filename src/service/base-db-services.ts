@@ -1,7 +1,6 @@
-import { eq,asc, sql, getTableName } from "drizzle-orm";
-import db from "../database/db.js"
-import { users, type NewUser, type User, type UsersTable } from "../database/schemas/users.js";
-import { count } from "drizzle-orm";
+import { asc, eq, getTableName, sql } from "drizzle-orm";
+import db from "../database/db";
+import { type NewUser, type User, type UsersTable } from "../database/schemas/users";
 
 type DBTable = UsersTable 
 type NewDBRecord  = NewUser
@@ -24,8 +23,8 @@ export const getRecordById = async <DBRecordRow>(table: DBTable,id: number) => {
 };
 
 //get all users 
-export const getAllRecords = async <DBRecordRow>(curent_page: number,table: DBTable) => {
-  const page_size = 10;
+export const getAllRecords = async <DBRecordRow>(curent_page: number,page_size:number,table: DBTable) => {
+  // const page_size = 10;
   const result = await db
     .select()
     .from(table)
@@ -40,7 +39,7 @@ export const getAllRecords = async <DBRecordRow>(curent_page: number,table: DBTa
   const totalPages = Math.ceil(total_records / page_size);
 
   return {
-    total_records,
+    total_records:Number(total_records),
     curent_page,
     page_size,
     totalPages,
@@ -61,9 +60,6 @@ export const deleteRecordById = async <DBRecordRow>(table: DBTable, id: number) 
     .returning();
     return result[0];
   };
-  
-
-
 
 
 export const updateRecordById=async <DBRecordRow>(table:DBTable,record :  any ,id:number) => {

@@ -1,6 +1,6 @@
 import { pinoLogger } from "hono-pino";
 
-import env from "../env.js";
+import env from "../env";
 
 export function piLogger() {
   return pinoLogger({

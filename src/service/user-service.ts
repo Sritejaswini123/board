@@ -1,7 +1,7 @@
-import db from "../database/db.js";
 import { eq } from "drizzle-orm";
-import { users, type NewUser, type User, type UsersTable } from "../database/schemas/users.js";
-import { getRecordById , getAllRecords, deleteRecordById, updateRecordById} from "./base-db-services.js";
+import db from "../database/db";
+import { users, type NewUser } from "../database/schemas/users";
+import { deleteRecordById, getAllRecords, getRecordById } from "./base-db-services";
 
 
 
@@ -28,8 +28,8 @@ export const isUserExist=async(email:string)=>{
 }
 
   //get all users 
-export const getAllUsers = async (page_no:number) => {
-  return await getAllRecords(page_no,users);
+export const getAllUsers = async (page_no: number, page_size: number) => {
+  return await getAllRecords(page_no,page_size,users);
 }
 
 //delete user by id

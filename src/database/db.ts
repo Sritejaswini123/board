@@ -5,7 +5,7 @@ import env from "../env";
 import fs from "node:fs"
 
 const { Pool } = pg;
-
+ 
 const pool = new Pool({
   host: env.DB_HOST,
   port: env.DB_PORT,
@@ -18,7 +18,7 @@ const pool = new Pool({
     },
 });
 
-pool.query("select 2+4").then((res)=>{
+pool.query("select").then((res)=>{
   console.log("db connected")
 }).catch((err)=>{
   console.log("Db connection failed")

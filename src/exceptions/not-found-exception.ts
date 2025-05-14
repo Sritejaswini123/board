@@ -1,7 +1,6 @@
-import { NOT_FOUND } from "../constants/http-status-codes.js";
-import { NOT_FOUND as NOT_FOUND_MESSAGE } from "../constants/http-status-phrases.js";
-
-import BaseException from "./base-exception.js";
+import { NOT_FOUND } from "../constants/http-status-codes";
+import { NOT_FOUND as NOT_FOUND_MESSAGE } from "../constants/http-status-phrases";
+import BaseException from "./base-exception";
 
 export default class NotFoundException extends BaseException {
   constructor(message?: string, errData?: any) {

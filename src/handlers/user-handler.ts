@@ -1,13 +1,13 @@
-
+import factory from "../factory";
 import { ZodError } from "zod";
 import { USER_CREATED, USER_DELETEED, USER_EXIST, USER_FETCHED, USER_ID_REQUIRED, USER_NOT_FOUND, USER_UPDATED, USERS_FETCHED } from "../constants/app-messages";
 import { BAD_REQUEST, CONFLICT, CREATED, INTERNAL_SERVER_ERROR, NOT_FOUND, OK, UNPROCESSABLE_ENTITY } from "../constants/http-status-codes";
 import { users, type NewUser, type User } from "../database/schemas/users";
-import factory from "../factory";
-import { createUser, updateRecordById } from "../service/base-db-services";
+import { createUser, getRecordById, updateRecordById } from "../service/base-db-services";
 import { deleteUserById, getAllUsers, getUserById, isUserExist } from "../service/user-service";
 import { sendResponse } from "../utils/send-response";
 import { vCreateUser } from "../validations/user-validations";
+import NotFoundException from "../exceptions/not-found-exception";
 
 
 
@@ -23,13 +23,17 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
       doj: new Date(validUserReq.doj),
     }
     const checkEmail=validUserReq.email;
+    //
     const existingUser=await isUserExist(checkEmail);
-   
-    //if user exist 
-    if (existingUser.length > 0) {
-      console.log("Yes, user exists");
-      return c.json({USER_EXIST}, CONFLICT);
+
+   if(!existingUser){
+    throw new NotFoundException(USER_EXIST)
     }
+   
+    // if user exist 
+    // if (existingUser.length > 0) {
+    //   return c.json({USER_EXIST}, CONFLICT);
+    // }
 
     const user = await createUser<User>(users, userData);
 
@@ -47,6 +51,8 @@ export const createUserHandlers = factory.createHandlers(async (c) => {
 }
 );
 
+
+
 export const getUserByIdHandlers = factory.createHandlers(async (c) => {
   try {
     const userId = Number(c.req.param('user_id'));
@@ -54,12 +60,15 @@ export const getUserByIdHandlers = factory.createHandlers(async (c) => {
     if (!userId) {
       return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
     }
-    const user= await getUserById(userId);
+    const user= await getRecordById(users,userId);
     
      //if user exist 
-    if (!user) {
-      return sendResponse(c, NOT_FOUND,USER_NOT_FOUND+`with user_id ${userId}`);
-    }
+    // if (!user) {
+    //   return sendResponse(c, NOT_FOUND,USER_NOT_FOUND+`with user_id ${userId}`);
+    // }
+      if (!user) {
+        throw new NotFoundException(USER_NOT_FOUND);
+      }
     return sendResponse(c, OK, USER_FETCHED, user);
   } catch (error) {
     return sendResponse(c, INTERNAL_SERVER_ERROR, USER_NOT_FOUND);
@@ -84,7 +93,13 @@ export const getAllUsersHandlers = factory.createHandlers(async (c) => {
 export const deleteUserByIdHandlers = factory.createHandlers(async (c) => {
   try {
     const userId = Number(c.req.param('user_id'));
+      if (!userId) {
+      return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
+    }
     const deletedUser = await deleteUserById(userId);
+    if (!deletedUser) {
+        throw new NotFoundException(USER_NOT_FOUND);
+      }
     return sendResponse(c, OK, USER_DELETEED, deletedUser);
   } catch (error) {
     return sendResponse(c, INTERNAL_SERVER_ERROR, USER_NOT_FOUND);
@@ -96,24 +111,22 @@ export const deleteUserByIdHandlers = factory.createHandlers(async (c) => {
 export const updateUserByIdHandlers=factory.createHandlers(async(c)=>{
   try { 
     const userId=Number(c.req.param('user_id'));
-    console.log("user id--------->: ",userId);
-    
     if (!userId) {
       return sendResponse(c, BAD_REQUEST, USER_ID_REQUIRED);
     }
 
     const reqBody= await c.req.json();
-    console.log("reqBody:----------->",reqBody);
+    
     
     const validatedUser=vCreateUser.parse(reqBody);
 
-    console.log("validated user:----------->",validatedUser);
+    
     const userData:NewUser={
       ...validatedUser,
       dob: new Date(validatedUser.dob),
       doj: new Date(validatedUser.doj),
     }
-     console.log("user data:----------->",userData  );
+    
     const result=await updateRecordById(users,userData,userId);
     return sendResponse(c,OK,USER_UPDATED,result);
   } catch (error) {

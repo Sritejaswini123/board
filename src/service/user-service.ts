@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import db from "../database/db";
-import { users, type NewUser } from "../database/schemas/users";
-import { deleteRecordById, getAllRecords, getRecordById } from "./base-db-services";
+import { User, users, type NewUser } from "../database/schemas/users";
+import { deleteRecordById, getAllRecords, getRecordById, updateRecordById } from "./base-db-services";
 
 
 
@@ -11,6 +11,8 @@ export const createUser=async (userData: NewUser)=>{
     const  user =await db.insert(users).values(userData).returning();
     return user[0];
   }
+
+
 //get user by id
   export const getUserById =(userId: number) => {
     return  getRecordById(users, userId);
@@ -27,7 +29,7 @@ export const isUserExist=async(email:string)=>{
   return existingUser;
 }
 
-  //get all users 
+//get all users 
 export const getAllUsers = async (page_no: number, page_size: number) => {
   return await getAllRecords(page_no,page_size,users);
 }
@@ -38,12 +40,11 @@ export const deleteUserById = async (userId: number) => {
 };
   
 
-// export const updateUser=async(userData: UsersTable,userId: number)=>{
-//   return await updateRecord<User>(userData,userId);
-// }
+
+//update user by id
+export const updateUserById=async(userData:NewUser,userId:number)=>{
+  return await updateRecordById(users,userData,userId);
+}
   
 
 
-// export const updateuser=async(userData:NewUser,user_id:number)=>{
-// return updateRecordById()
-// }

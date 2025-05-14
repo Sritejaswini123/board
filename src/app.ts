@@ -6,9 +6,20 @@ import notFound from "./utils/not-found";
 import onError from "./utils/on-error";
 import { piLogger } from "./utils/pino-logger";
 import { sendResponse } from "./utils/send-response";
-
+import { cors } from 'hono/cors'
 const app = factory.createApp().basePath(env.API_VERSION);
 app.use(piLogger());
+
+
+
+app.use(
+  '*',
+  cors({
+    origin: '*',
+    allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  })
+)
+
 
 app.get("/", (c) => {
   return sendResponse(c, 200, SERVICE_UP);

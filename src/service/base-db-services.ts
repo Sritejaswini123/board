@@ -6,13 +6,14 @@ type DBTable = UsersTable
 type NewDBRecord  = NewUser
 type DBRecordRow = User
 
-export const createUser = async<DBRecordRow>(table : DBTable , record : NewDBRecord )=>{
+export const createUser = async<T extends DBRecordRow>(table : DBTable , record : NewDBRecord )=>{
     const result = await db
     .insert(table)
     .values(record)
     .returning() ;
     return result[0]  
 }
+
 
 export const getRecordById = async <DBRecordRow>(table: DBTable,id: number) => {
     const result = await db
@@ -51,7 +52,6 @@ export const getAllRecords = async <DBRecordRow>(curent_page: number,page_size:n
 
 //delete 
 export const deleteRecordById = async <DBRecordRow>(table: DBTable, id: number) => {
-  
   const columnInfo = sql.raw(`${getTableName(table)}.id`)
 
     const result = await db
@@ -62,7 +62,7 @@ export const deleteRecordById = async <DBRecordRow>(table: DBTable, id: number) 
   };
 
 
-export const updateRecordById=async <DBRecordRow>(table:DBTable,record :  any ,id:number) => {
+export const updateRecordById=async <DBRecordRow>(table:DBTable,record :  NewDBRecord,id:number) => {
   const columnInfo = sql.raw(`${getTableName(table)}.id`)
   const updatedRecord=await db
   .update(table)
